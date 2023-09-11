@@ -5,10 +5,8 @@ import {RouterModule} from '@angular/router';
 @Component({
     standalone: true,
     imports: [RouterModule, TuiRootModule, TuiDialogModule, TuiAlertModule],
-    selector: 'nosework-root',
+    selector: 'nw-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.less'],
 })
-export class AppComponent {
-    title = 'app';
-}
+export class AppComponent {}
