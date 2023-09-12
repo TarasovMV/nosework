@@ -89,7 +89,7 @@ export class AuthPage {
         from(methodMapper[this.pageType$.getValue()]())
             .pipe(
                 finalize(() => this.isLoad$.next(false)),
-                takeUntilDestroyed(),
+                // takeUntilDestroyed(),
             )
             .subscribe();
     }
