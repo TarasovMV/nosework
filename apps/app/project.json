@@ -31,7 +31,8 @@
             "glob": "_redirects",
             "input": "apps/app",
             "output": "/"
-          }
+          },
+          "apps/app/src/manifest.webmanifest"
         ],
         "styles": [
           "node_modules/@taiga-ui/core/styles/taiga-ui-theme.less",
