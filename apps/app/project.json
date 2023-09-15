@@ -39,7 +39,9 @@
           "node_modules/@taiga-ui/styles/taiga-ui-global.less",
           "apps/app/src/styles.less"
         ],
-        "scripts": []
+        "scripts": [],
+        "serviceWorker": true,
+        "ngswConfigPath": "apps/app/ngsw-config.json"
       },
       "configurations": {
         "production": {
@@ -53,6 +55,12 @@
               "type": "anyComponentStyle",
               "maximumWarning": "2kb",
               "maximumError": "4kb"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/app/src/environments/environment.ts",
+              "with": "apps/app/src/environments/environment.prod.ts"
             }
           ],
           "outputHashing": "all"

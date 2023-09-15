@@ -8,7 +8,7 @@ export const appRoutes: Route[] = [
         loadComponent: () => import('./pages/main/main.page').then(c => c.MainPage),
         children: [
             {
-                path: '',
+                path: 'plan',
                 loadComponent: () =>
                     import('./pages/plan/plan.page').then(c => c.PlanPage),
             },
