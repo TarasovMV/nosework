@@ -8,18 +8,18 @@ import {
 } from '@taiga-ui/kit';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {
+    TuiButtonModule,
     TuiDataListModule,
     TuiDropdownModule,
     TuiTextfieldControllerModule,
 } from '@taiga-ui/core';
-import {SMELL_AFFECTIONS, SMELL_FACTORS, TRAINING_AIMS} from '../../constants';
-import {
-    TUI_DEFAULT_MATCHER,
-    TuiClickOutsideModule,
-    TuiFocusedModule,
-    tuiPure,
-} from '@taiga-ui/cdk';
-import {Observable, switchMap} from 'rxjs';
+import {TuiAppBarModule} from '@taiga-ui/addon-mobile';
+import {SMELL_AFFECTIONS, SMELL_FACTORS, TRAINING_AIMS} from '@nw-app/constants';
+import {Observable, of, switchMap} from 'rxjs';
+import {DeletableImageComponent} from '../../components/deletable-image/deletable-image.component';
+import {tuiMarkControlAsTouchedAndValidate} from '@taiga-ui/cdk';
+import {SupabaseService} from '../../services/supabase.service';
+import {planToDbMapper} from '@nw-app/utils';
 
 @Component({
     selector: 'nw-plan',
@@ -35,6 +35,9 @@ import {Observable, switchMap} from 'rxjs';
         TuiDropdownModule,
         TuiTextareaModule,
         TuiInputFilesModule,
+        TuiButtonModule,
+        DeletableImageComponent,
+        TuiAppBarModule,
     ],
     templateUrl: './plan.page.html',
     styleUrls: ['./plan.page.less'],
@@ -47,7 +50,7 @@ export class PlanPage {
     protected readonly smellAffections = SMELL_AFFECTIONS;
     protected readonly smellFactors = SMELL_FACTORS;
 
-    readonly form = new FormGroup({
+    protected readonly form = new FormGroup({
         trainingAim: new FormControl([]),
         image: new FormControl<any>(null),
         smellAffection: new FormControl([]),
@@ -56,27 +59,49 @@ export class PlanPage {
         smellFactorDescription: new FormControl(''),
     });
 
-    readonly imageSrc$ = this.form.controls.image.valueChanges.pipe(
+    protected readonly imageSrc$ = this.form.controls.image.valueChanges.pipe(
         switchMap(file => {
-            return new Observable(sub => {
-                const reader = new FileReader();
-                reader.onload = (event: any) => {
-                    sub.next(event.target.result);
-                };
-                reader.onerror = event => {
-                    sub.next(null);
-                };
-                reader.readAsDataURL(file);
-            });
+            return !file
+                ? of(null)
+                : (new Observable(sub => {
+                      const reader = new FileReader();
+                      reader.onload = (event: any) => {
+                          sub.next(event.target.result);
+                      };
+                      reader.onerror = event => {
+                          sub.next(null);
+                      };
+                      reader.readAsDataURL(file);
+                  }) as Observable<string | null>);
         }),
     );
 
-    checkOpen(key: string): boolean {
-        console.log(this.form.value.image);
+    constructor(private readonly supabaseService: SupabaseService) {}
+
+    protected checkOpen(key: string): boolean {
         return !!this.multiselectOpen.get(key);
     }
 
-    changeOpen(key: string): void {
+    protected changeOpen(key: string): void {
         this.multiselectOpen.set(key, !this.checkOpen(key));
+    }
+
+    protected deleteImage(): void {
+        this.form.controls.image.setValue(null);
+    }
+
+    protected save(e: Event) {
+        e.preventDefault();
+
+        this.supabaseService.getPlans().subscribe(r => console.log(r));
+
+        // if (!this.form.valid) {
+        //     tuiMarkControlAsTouchedAndValidate(this.form);
+        //     return;
+        // }
+        //
+        // const data = planToDbMapper(this.form);
+        //
+        // this.supabaseService.addPlan(data).subscribe();
     }
 }

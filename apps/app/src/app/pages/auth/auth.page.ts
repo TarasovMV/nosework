@@ -1,12 +1,18 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {TuiInputModule} from '@taiga-ui/kit';
-import {TuiButtonModule, TuiLinkModule} from '@taiga-ui/core';
+import {TuiInputModule, TuiInputPasswordModule} from '@taiga-ui/kit';
+import {
+    TuiAlertService,
+    TuiButtonModule,
+    TuiDialogService,
+    TuiHintModule,
+    TuiLinkModule,
+} from '@taiga-ui/core';
 import {SupabaseService} from '../../services/supabase.service';
 import {tuiMarkControlAsTouchedAndValidate} from '@taiga-ui/cdk';
-import {BehaviorSubject, finalize, from, map} from 'rxjs';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {BehaviorSubject, finalize, map} from 'rxjs';
+import {Router} from '@angular/router';
 
 enum AuthPageType {
     Auth = 'AUTH',
@@ -22,6 +28,8 @@ enum AuthPageType {
         ReactiveFormsModule,
         TuiButtonModule,
         TuiLinkModule,
+        TuiInputPasswordModule,
+        TuiHintModule,
     ],
     templateUrl: './auth.page.html',
     styleUrls: ['./auth.page.less'],
@@ -53,7 +61,12 @@ export class AuthPage {
 
     readonly isLoad$ = new BehaviorSubject<boolean>(false);
 
-    constructor(private readonly supabaseService: SupabaseService) {}
+    constructor(
+        private readonly supabaseService: SupabaseService,
+        private readonly alertService: TuiAlertService,
+        private readonly dialogService: TuiDialogService,
+        private readonly router: Router,
+    ) {}
 
     changeType(event: Event) {
         event.preventDefault();
@@ -86,11 +99,41 @@ export class AuthPage {
         };
 
         this.isLoad$.next(true);
-        from(methodMapper[this.pageType$.getValue()]())
+        methodMapper[this.pageType$.getValue()]()
             .pipe(
                 finalize(() => this.isLoad$.next(false)),
                 // takeUntilDestroyed(),
             )
+            .subscribe({
+                next: () => this.successSign(),
+                error: () => this.errorSign(),
+            });
+    }
+
+    private successSign() {
+        if (this.pageType$.getValue() === AuthPageType.Auth) {
+            this.router.navigate(['/']).then();
+            return;
+        }
+
+        this.pageType$.next(AuthPageType.Auth);
+        this.dialogService
+            .open('Перейдите в указанную почту, чтобы подтвердить ее', {
+                closeable: false,
+                label: 'Регистрация',
+            })
             .subscribe();
+    }
+
+    private errorSign() {
+        const showAlert = (msg: string) =>
+            this.alertService.open(msg, {status: 'error'}).subscribe();
+
+        if (this.pageType$.getValue() === AuthPageType.Auth) {
+            showAlert('Ошибка авторизации');
+            return;
+        }
+
+        showAlert('Ошибка регистрации');
     }
 }

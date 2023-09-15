@@ -1,0 +1,9 @@
+<ng-container *ngIf='src'>
+  <div class='wrapper'>
+    <img [src]='src' />
+    <div *ngIf='!isMobile' class='delete-container'>
+      <button (click)='delete.emit()' icon='tuiIconTrash2Large' tuiIconButton shape='rounded' size='xl'></button>
+    </div>
+    <button class='tui-space_top-4' *ngIf='isMobile' tuiButton (click)='delete.emit()'>Удалить картинку</button>
+  </div>
+</ng-container>

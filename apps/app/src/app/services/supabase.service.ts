@@ -8,7 +8,8 @@ import {
     User,
 } from '@supabase/supabase-js';
 import {environment} from '../../environments/environment';
-import {from, tap} from 'rxjs';
+import {from, of, switchMap, tap, throwError} from 'rxjs';
+import {PlanDb} from '../models';
 
 export interface Profile {
     id?: string;
@@ -34,6 +35,20 @@ export class SupabaseService {
         );
     }
 
+    addPlan(data: PlanDb) {
+        return from(this.supabase.from('plans').insert(data));
+    }
+
+    getPlans() {
+        console.log(this.session?.user.id);
+        return from(
+            this.supabase
+                .from('plans')
+                .select(`*`)
+                .eq('user_id', this.session?.user.id),
+        );
+    }
+
     profile(user: User) {
         return this.supabase
             .from('profiles')
@@ -47,11 +62,15 @@ export class SupabaseService {
     }
 
     signIn(email: string, password: string) {
-        return this.supabase.auth.signInWithPassword({email, password});
+        return from(this.supabase.auth.signInWithPassword({email, password})).pipe(
+            switchMap(res => (res.error ? throwError(() => '') : of(res))),
+        );
     }
 
     signUp(email: string, password: string) {
-        return this.supabase.auth.signUp({email, password});
+        return from(this.supabase.auth.signUp({email, password})).pipe(
+            switchMap(res => (res.error ? throwError(() => '') : of(res))),
+        );
     }
 
     signOut() {

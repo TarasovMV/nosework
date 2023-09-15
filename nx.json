@@ -60,5 +60,6 @@
             "skipTests": true,
             "changeDetection": "OnPush"
         }
-    }
+    },
+    "defaultProject": "app"
 }

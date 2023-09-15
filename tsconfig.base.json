@@ -14,7 +14,12 @@
         "skipLibCheck": true,
         "skipDefaultLibCheck": true,
         "baseUrl": ".",
-        "paths": {}
+        "paths": {
+            "@nw-app/constants": ["apps/app/src/app/constants/index.ts"],
+            "@nw-app/guards": ["apps/app/src/app/guards/index.ts"],
+            "@nw-app/models": ["apps/app/src/app/models/index.ts"],
+            "@nw-app/utils": ["apps/app/src/app/utils/index.ts"]
+        }
     },
     "exclude": ["node_modules", "tmp"]
 }
