@@ -66,8 +66,6 @@ import {ActivatedRoute, Router} from '@angular/router';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlanPage implements OnInit {
-    private readonly multiselectOpen = new Map<string, boolean>();
-
     protected readonly trainingAims = TRAINING_AIMS;
     protected readonly smellAffections = SMELL_AFFECTIONS;
     protected readonly smellFactors = SMELL_FACTORS;
@@ -135,23 +133,6 @@ export class PlanPage implements OnInit {
                     console.log(x);
                 });
         }
-    }
-
-    protected checkOpen(key: string): boolean {
-        return !!this.multiselectOpen.get(key);
-    }
-
-    protected changeOpen(key: string, forceState: boolean | null = null): void {
-        this.multiselectOpen.set(key, !this.checkOpen(key));
-        // console.log('change', key);
-        // if (forceState === null) {
-        //     this.multiselectOpen.set(key, !this.checkOpen(key));
-        //     return;
-        // }
-        //
-        // if (this.checkOpen(key) === forceState) {
-        //     this.multiselectOpen.set(key, !forceState);
-        // }
     }
 
     protected deleteImage(): void {

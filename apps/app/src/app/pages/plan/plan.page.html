@@ -23,8 +23,6 @@
             [class.tui-skeleton]="!!(formLoader$ | async)"
             [tuiTextfieldLabelOutside]='true'
             [editable]='false'
-            [tuiDropdownOpen]="checkOpen('trainingAim')"
-            (focusedChange)="changeOpen('trainingAim')"
           >
             Цель тренировки
             <tui-data-list-wrapper
@@ -52,8 +50,6 @@
             [class.tui-skeleton]="!!(formLoader$ | async)"
             [tuiTextfieldLabelOutside]='true'
             [editable]='false'
-            [tuiDropdownOpen]="checkOpen('smellAffection')"
-            (focusedChange)="changeOpen('smellAffection')"
           >
             На параметры запахового конуса влияют:
             <tui-data-list-wrapper
@@ -77,8 +73,6 @@
             [class.tui-skeleton]="!!(formLoader$ | async)"
             [tuiTextfieldLabelOutside]='true'
             [editable]='false'
-            [tuiDropdownOpen]="checkOpen('smellFactor')"
-            (focusedChange)="changeOpen('smellFactor')"
           >
             Причины появления кумуляции запаха:
             <tui-data-list-wrapper
