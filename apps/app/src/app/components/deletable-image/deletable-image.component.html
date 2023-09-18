@@ -4,6 +4,6 @@
     <div *ngIf='!isMobile' class='delete-container'>
       <button (click)='delete.emit()' icon='tuiIconTrash2Large' tuiIconButton shape='rounded' size='xl'></button>
     </div>
-    <button class='tui-space_top-4' *ngIf='isMobile' tuiButton (click)='delete.emit()'>Удалить картинку</button>
+    <button class='tui-space_top-4' *ngIf='isMobile' tuiButton appearance='secondary-destructive' (click)='delete.emit()'>Удалить картинку</button>
   </div>
 </ng-container>

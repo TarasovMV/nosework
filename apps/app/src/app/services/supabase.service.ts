@@ -39,8 +39,18 @@ export class SupabaseService {
         return from(this.supabase.from('plans').insert(data));
     }
 
+    getPlanById(id: string) {
+        return from(
+            this.supabase
+                .from('plans')
+                .select(`*`)
+                .eq('user_id', this.session?.user.id)
+                .eq('id', id)
+                .single(),
+        );
+    }
+
     getPlans() {
-        console.log(this.session?.user.id);
         return from(
             this.supabase
                 .from('plans')
@@ -86,11 +96,15 @@ export class SupabaseService {
         return this.supabase.from('profiles').upsert(update);
     }
 
-    downloadImage(path: string) {
-        return this.supabase.storage.from('avatars').download(path);
+    downloadPlanImage(path: string) {
+        return from(
+            this.supabase.storage.from('plan_images').download('private/' + path),
+        );
     }
 
-    uploadAvatar(filePath: string, file: File) {
-        return this.supabase.storage.from('avatars').upload(filePath, file);
+    uploadPlanImage(filePath: string, file: File) {
+        return from(
+            this.supabase.storage.from('plan_images').upload('private/' + filePath, file),
+        );
     }
 }

@@ -32,7 +32,6 @@ enum AuthPageType {
         TuiHintModule,
     ],
     templateUrl: './auth.page.html',
-    styleUrls: ['./auth.page.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthPage {

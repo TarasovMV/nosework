@@ -10,7 +10,7 @@
           <tui-input-password formControlName='password'>Пароль</tui-input-password>
         </div>
         <div class='tui-form__buttons'>
-          <button [showLoader]='!!(isLoad$ | async)' tuiButton class='tui-form__button' type='submit'>{{buttonText$ | async}}</button>
+          <button style='width: 100%' [showLoader]='!!(isLoad$ | async)' tuiButton class='tui-form__button' type='submit'>{{buttonText$ | async}}</button>
         </div>
         <div class='tui-form__row' (click)='changeType($event)'>
           <a tuiLink [pseudo]='true'>{{linkText$ | async}}</a>
