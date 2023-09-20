@@ -13,6 +13,7 @@ import {SupabaseService} from '../../services/supabase.service';
 import {tuiMarkControlAsTouchedAndValidate} from '@taiga-ui/cdk';
 import {BehaviorSubject, finalize, map} from 'rxjs';
 import {Router} from '@angular/router';
+import {AuthHeaderComponent} from './components/auth-header/auth-header.component';
 
 enum AuthPageType {
     Auth = 'AUTH',
@@ -30,6 +31,7 @@ enum AuthPageType {
         TuiLinkModule,
         TuiInputPasswordModule,
         TuiHintModule,
+        AuthHeaderComponent,
     ],
     templateUrl: './auth.page.html',
     changeDetection: ChangeDetectionStrategy.OnPush,

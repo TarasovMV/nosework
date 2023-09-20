@@ -38,6 +38,11 @@ export const appRoutes: Route[] = [
                     import('./pages/training/training.page').then(c => c.TrainingPage),
             },
             {
+                path: 'trainings',
+                loadComponent: () =>
+                    import('./pages/trainings/trainings.page').then(c => c.TrainingsPage),
+            },
+            {
                 path: '**',
                 redirectTo: 'plans',
             },

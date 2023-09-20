@@ -15,9 +15,11 @@
         "skipDefaultLibCheck": true,
         "baseUrl": ".",
         "paths": {
+            "@nw-app/components/*": ["apps/app/src/app/components/*"],
             "@nw-app/constants": ["apps/app/src/app/constants/index.ts"],
             "@nw-app/guards": ["apps/app/src/app/guards/index.ts"],
             "@nw-app/models": ["apps/app/src/app/models/index.ts"],
+            "@nw-app/services/*": ["apps/app/src/app/services/*"],
             "@nw-app/utils": ["apps/app/src/app/utils/index.ts"]
         }
     },

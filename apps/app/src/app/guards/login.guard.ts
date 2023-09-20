@@ -1,5 +1,5 @@
 import {inject} from '@angular/core';
-import {SupabaseService} from '../services/supabase.service';
+import {SupabaseService} from '@nw-app/services/supabase.service';
 import {map} from 'rxjs';
 import {Router} from '@angular/router';
 

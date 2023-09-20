@@ -1,0 +1,7 @@
+<button
+  *ngIf='icon$ | async as icon'
+  tuiIconButton [icon]='icon'
+  appearance='flat'
+  shape='rounded'
+  (click)='toggle()'
+></button>

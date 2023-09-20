@@ -1,0 +1,33 @@
+<nw-header-wrapper>
+  <div class='menu'>
+    <ng-container *ngIf='!isMobile'>
+      <a routerLink='/plans' class='tui-text_body-l tui-space_right-6'>Планы</a>
+      <a routerLink='/trainings' class='tui-text_body-l'>Тренировки</a>
+    </ng-container>
+    <nw-theme-toggle class='tui-space_right-2'></nw-theme-toggle>
+    <tui-hosted-dropdown
+      tuiDropdownAlign="left"
+      [content]="menuTpl"
+      [(open)]="isDotMenuOpen"
+    >
+      <button
+        tuiIconButton
+        type="button"
+        appearance="flat"
+        icon="tuiIconMoreVerticalLarge"
+      ></button>
+    </tui-hosted-dropdown>
+  </div>
+</nw-header-wrapper>
+
+<ng-template #menuTpl>
+  <tui-data-list>
+    <button
+      *ngFor="let item of menu"
+      tuiOption
+      (click)="isDotMenuOpen = false; item.action();"
+    >
+      {{item.label}}
+    </button>
+  </tui-data-list>
+</ng-template>

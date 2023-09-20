@@ -1,0 +1,11 @@
+<div class='tui-container tui-container_adaptive'>
+  <div class='tui-row tui-row_adaptive'>
+    <div class='tui-col tui-col_lg-12 tui-col_md-12 tui-col_xs-12'>
+      <div class='content'>
+        <img *ngIf='logoSrc$ | async as logoSrc' class='logo' alt='' [src]='logoSrc'/>
+        <div class='tui-text_h5 tui-space_left-2 tui-space_right-12'>Nosework</div>
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+</div>
