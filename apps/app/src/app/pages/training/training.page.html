@@ -8,7 +8,131 @@
   <div class='tui-row tui-row_adaptive'>
     <div class='tui-col tui-col_lg-8 tui-col_md-8 tui-col_xs-12'>
       <form [formGroup]='form' class='tui-form' (submit)='save($event)'>
-        <div class='tui-form__row'>
+        <div class='tui-form__row tui-form__row_multi-fields'>
+          <tui-input-date
+            class='tui-form__multi-field'
+            formControlName="date"
+          >Дата</tui-input-date>
+          <tui-input-time
+            class='tui-form__multi-field'
+            formControlName="time"
+          >Время</tui-input-time>
+        </div>
+
+        <div class='tui-form__row tui-form__row_multi-fields'>
+          <tui-input
+            class='tui-form__multi-field'
+            formControlName="place"
+          >Место</tui-input>
+          <tui-input
+            class='tui-form__multi-field'
+            formControlName="target"
+          >Цель</tui-input>
+        </div>
+
+        <div class='tui-form__row tui-form__row_multi-fields'>
+          <tui-select
+            class='tui-form__multi-field'
+            formControlName="category"
+          >
+            Категория
+            <input
+              placeholder="Выберите"
+              tuiTextfield
+            />
+            <tui-data-list-wrapper
+              *tuiDataList
+              [items]="categories"
+            ></tui-data-list-wrapper>
+          </tui-select>
+          <div
+            tuiGroup
+            class='tui-form__multi-field'
+            [collapsed]="true"
+          >
+            <tui-radio-block
+              contentAlign="right"
+              formControlName="searchType"
+              item="blind"
+              size="l"
+            >
+              Слепой
+            </tui-radio-block>
+            <tui-radio-block
+              contentAlign="right"
+              formControlName="searchType"
+              item="seeing"
+              size="l"
+            >
+              Не слепой
+            </tui-radio-block>
+          </div>
+        </div>
+
+        <div class='tui-form__row tui-form__row_multi-fields'>
+          <tui-input
+            class='tui-form__multi-field'
+            formControlName="source"
+          >Источник</tui-input>
+          <tui-input-slider
+            class='tui-form__multi-field'
+            tuiTextfieldPostfix='шт'
+            formControlName="count"
+            [max]="10"
+            [min]="1"
+            [quantum]="1"
+          >
+            Количество источников
+          </tui-input-slider>
+        </div>
+
+        <div class='tui-form__row tui-form__row_multi-fields'>
+          <tui-input
+            class='tui-form__multi-field'
+            formControlName="sourcePlace"
+          >Размещение источника</tui-input>
+          <tui-input-number
+            class='tui-form__multi-field'
+            formControlName="waitTime"
+            tuiTextfieldPostfix='мин'
+          >Выдержка</tui-input-number>
+        </div>
+        
+        <tui-input
+          class='tui-form__row tui-form__row_half-width'
+          formControlName="sourcePlace"
+        >Отвлечения</tui-input>
+        
+        <div class='tui-form__header'>Внешние условия</div>
+
+        <div class='tui-form__row tui-form__row_multi-fields'>
+          <tui-input-number
+            class='tui-form__multi-field'
+            formControlName="temperature"
+            tuiTextfieldPostfix='C'
+          >Температура</tui-input-number>
+          <tui-input-number
+            class='tui-form__multi-field'
+            formControlName="humidity"
+            tuiTextfieldPostfix='%'
+          >Влажность</tui-input-number>
+        </div>
+
+        <tui-input
+          class='tui-form__row tui-form__row_half-width'
+          formControlName="wind"
+          tuiTextfieldPostfix='м/c'
+        >Ветер</tui-input>
+
+        <div class='tui-form__header'>Выводы и змечания</div>
+
+        <tui-textarea
+          class='tui-form__row'
+          formControlName="conclusion"
+        >Введите текст</tui-textarea>
+
+        <div class='tui-form__buttons tui-space_bottom-8'>
+          <button class='tui-form__button' tuiButton type='submit' [showLoader]='!!(submitLoader$ | async)'>Сохранить</button>
         </div>
       </form>
     </div>
