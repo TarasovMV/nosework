@@ -10,7 +10,9 @@ const THEME_KEY = 'theme';
 export class ThemeService {
     readonly isDark$ = new BehaviorSubject<boolean>(this.storageGet());
 
-    constructor(@Inject(DOCUMENT) private readonly document: Document) {}
+    constructor(@Inject(DOCUMENT) private readonly document: Document) {
+        this.storageGet() ? this.setDarkTheme() : this.setLightTheme();
+    }
 
     setDarkTheme() {
         this.isDark$.next(true);
@@ -41,11 +43,12 @@ export class ThemeService {
         localStorage.setItem(THEME_KEY, key);
     }
 
+    /**
+     * equivalent as isDark
+     * @private
+     */
     private storageGet() {
         const key = localStorage.getItem('theme');
-        if (!key || key === 'light') {
-            return false;
-        }
-        return true;
+        return !(!key || key === 'light');
     }
 }

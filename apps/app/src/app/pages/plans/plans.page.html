@@ -16,9 +16,9 @@
         (click)="create()"
       >Создать</button>
       <ng-container *tuiLet='plans$ | async as plans'>
-        <ng-container *ngIf='plans$'>
+        <ng-container *ngIf='plans'>
           <div *ngFor='let plan of plans'>
-            <a routerLink='/plan/{{plan.id}}'>План {{plan.id}}</a>
+            <a tuiLink routerLink='/plan/{{plan.id}}'>План #{{plan.id}} {{plan.title}}</a>
           </div>
         </ng-container>
       </ng-container>

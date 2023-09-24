@@ -15,13 +15,13 @@
         iconRight="tuiIconPlus"
         (click)="create()"
       >Создать</button>
-<!--      <ng-container *tuiLet='plans$ | async as plans'>-->
-<!--        <ng-container *ngIf='plans$'>-->
-<!--          <div *ngFor='let plan of plans'>-->
-<!--            <a routerLink='/plan/{{plan.id}}'>План {{plan.id}}</a>-->
-<!--          </div>-->
-<!--        </ng-container>-->
-<!--      </ng-container>-->
+      <ng-container *tuiLet='trainings$ | async as trainings'>
+        <ng-container *ngIf='trainings'>
+          <div *ngFor='let training of trainings'>
+            <a tuiLink routerLink='/training/{{training.id}}'>Тренировка {{training.id}}</a>
+          </div>
+        </ng-container>
+      </ng-container>
     </div>
   </div>
 </div>

@@ -9,6 +9,7 @@ import {
     TuiDataListModule,
     TuiHostedDropdownModule,
 } from '@taiga-ui/core';
+import {SupabaseService} from '@nw-app/services/supabase.service';
 
 @Component({
     selector: 'nw-header',
@@ -42,12 +43,14 @@ export class HeaderComponent {
         },
         {
             label: 'Выход',
-            action: () => console.log('logout'),
+            action: () =>
+                this.supabaseService.signOut().then(() => this.router.navigate(['auth'])),
         },
     ].filter(({disabled}) => !disabled);
 
     constructor(
         @Inject(TUI_IS_MOBILE) protected readonly isMobile: boolean,
+        private readonly supabaseService: SupabaseService,
         private readonly router: Router,
     ) {}
 }

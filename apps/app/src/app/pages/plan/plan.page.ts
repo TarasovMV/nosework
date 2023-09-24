@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, NgZone, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {
     TuiDataListWrapperModule,
@@ -35,10 +35,17 @@ import {
     tap,
 } from 'rxjs';
 import {DeletableImageComponent} from '../../components/deletable-image/deletable-image.component';
-import {tuiMarkControlAsTouchedAndValidate} from '@taiga-ui/cdk';
+import {TuiDestroyService, tuiMarkControlAsTouchedAndValidate} from '@taiga-ui/cdk';
 import {SupabaseService} from '../../services/supabase.service';
-import {planFromDbMapper, planToDbMapper, uuidGenerator} from '@nw-app/utils';
+import {
+    compressImage,
+    planFromDbMapper,
+    planToDbMapper,
+    uuidGenerator,
+} from '@nw-app/utils';
 import {ActivatedRoute, Router} from '@angular/router';
+import {PlanDb} from '@nw-app/models';
+import {fromPromise} from 'rxjs/internal/observable/innerFrom';
 
 @Component({
     selector: 'nw-plan',
@@ -63,9 +70,12 @@ import {ActivatedRoute, Router} from '@angular/router';
     ],
     templateUrl: './plan.page.html',
     styleUrls: ['./plan.page.less'],
+    providers: [TuiDestroyService],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlanPage implements OnInit {
+    private initialData: PlanDb | null = null;
+
     protected readonly trainingAims = TRAINING_AIMS;
     protected readonly smellAffections = SMELL_AFFECTIONS;
     protected readonly smellFactors = SMELL_FACTORS;
@@ -106,6 +116,8 @@ export class PlanPage implements OnInit {
         private readonly supabaseService: SupabaseService,
         private readonly route: ActivatedRoute,
         private readonly router: Router,
+        private readonly ngZone: NgZone,
+        private destroy$: TuiDestroyService,
     ) {}
 
     ngOnInit() {
@@ -117,6 +129,7 @@ export class PlanPage implements OnInit {
                 .getPlanById(id)
                 .pipe(
                     tap(({data}) => this.form.setValue(planFromDbMapper(data))),
+                    tap(({data}) => (this.initialData = data)),
                     switchMap(({data}) =>
                         data?.image
                             ? this.supabaseService.downloadPlanImage(data.image)
@@ -128,10 +141,9 @@ export class PlanPage implements OnInit {
                             this.form.controls.image.setValue(new File([data], '')),
                     ),
                     finalize(() => this.formLoader$.next(false)),
+                    takeUntil(this.destroy$),
                 )
-                .subscribe(x => {
-                    console.log(x);
-                });
+                .subscribe();
         }
     }
 
@@ -147,30 +159,57 @@ export class PlanPage implements OnInit {
             return;
         }
 
-        const image = this.form.controls.image.value;
         const imageName = uuidGenerator();
 
-        let observer = of(false);
+        const addObserver = of(this.form.controls.image.value).pipe(
+            switchMap(file =>
+                file
+                    ? this.supabaseService
+                          .uploadPlanImage(imageName, file)
+                          .pipe(map(() => true))
+                    : of(false),
+            ),
+            switchMap(isImage => {
+                const data = planToDbMapper(this.form.value, isImage ? imageName : null);
+                return this.supabaseService.addPlan(data);
+            }),
+        );
 
-        if (image) {
-            observer = this.supabaseService
-                .uploadPlanImage(imageName, image)
-                .pipe(map(() => true));
-        }
+        const updateObserver = of(this.initialData?.image).pipe(
+            switchMap(imageName =>
+                imageName ? this.supabaseService.deletePlanImage(imageName) : of(null),
+            ),
+            map(() => this.form.controls.image.value),
+            switchMap(file =>
+                file
+                    ? this.uploadImage(imageName, file).pipe(map(() => true))
+                    : of(false),
+            ),
+            switchMap(isImage => {
+                const data = planToDbMapper(this.form.value, isImage ? imageName : null);
+                return this.supabaseService.updatePlan({...this.initialData, ...data});
+            }),
+        );
+
+        const observer = this.initialData ? updateObserver : addObserver;
 
         this.submitLoader$.next(true);
 
         observer
             .pipe(
-                switchMap(isImage => {
-                    const data = planToDbMapper(
-                        this.form.value,
-                        isImage ? imageName : null,
-                    );
-                    return this.supabaseService.addPlan(data);
-                }),
                 finalize(() => this.submitLoader$.next(false)),
+                takeUntil(this.destroy$),
             )
             .subscribe(() => this.router.navigate(['plans']));
+    }
+
+    private uploadImage(fileName: string, file: File) {
+        // return this.ngZone
+        //     .run(() => compressImage$(file))
+        return fromPromise(compressImage(file)).pipe(
+            switchMap(compressFile =>
+                this.supabaseService.uploadPlanImage(fileName, compressFile as File),
+            ),
+        );
     }
 }

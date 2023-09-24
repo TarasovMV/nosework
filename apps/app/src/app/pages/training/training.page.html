@@ -8,12 +8,38 @@
   <div class='tui-row tui-row_adaptive'>
     <div class='tui-col tui-col_lg-8 tui-col_md-8 tui-col_xs-12'>
       <form [formGroup]='form' class='tui-form' (submit)='save($event)'>
+        <tui-select
+          *tuiLet="plans$ | async as items"
+          [class.tui-skeleton]="!!(formLoader$ | async)"
+          [tuiTextfieldLabelOutside]="true"
+          [valueContent]="items ? planStringify(items) : loading"
+          formControlName='planId'
+        >
+          Выберите план
+          <ng-template tuiDataList>
+            <tui-data-list *ngIf="items; else loading">
+              <button
+                *ngFor="let item of items"
+                tuiOption
+                [value]="item.id"
+              >
+                {{ item.id }}
+              </button>
+            </tui-data-list>
+          </ng-template>
+          <ng-template #loading>
+            <tui-loader class="tui-space_vertical-3 loader"></tui-loader>
+          </ng-template>
+        </tui-select>
+
         <div class='tui-form__row tui-form__row_multi-fields'>
           <tui-input-date
+            [class.tui-skeleton]="!!(formLoader$ | async)"
             class='tui-form__multi-field'
             formControlName="date"
           >Дата</tui-input-date>
           <tui-input-time
+            [class.tui-skeleton]="!!(formLoader$ | async)"
             class='tui-form__multi-field'
             formControlName="time"
           >Время</tui-input-time>
@@ -23,15 +49,18 @@
           <tui-input
             class='tui-form__multi-field'
             formControlName="place"
+            [class.tui-skeleton]="!!(formLoader$ | async)"
           >Место</tui-input>
           <tui-input
             class='tui-form__multi-field'
             formControlName="target"
+            [class.tui-skeleton]="!!(formLoader$ | async)"
           >Цель</tui-input>
         </div>
 
         <div class='tui-form__row tui-form__row_multi-fields'>
           <tui-select
+            [class.tui-skeleton]="!!(formLoader$ | async)"
             class='tui-form__multi-field'
             formControlName="category"
           >
@@ -49,6 +78,7 @@
             tuiGroup
             class='tui-form__multi-field'
             [collapsed]="true"
+            [class.tui-skeleton]="!!(formLoader$ | async)"
           >
             <tui-radio-block
               contentAlign="right"
@@ -73,6 +103,7 @@
           <tui-input
             class='tui-form__multi-field'
             formControlName="source"
+            [class.tui-skeleton]="!!(formLoader$ | async)"
           >Источник</tui-input>
           <tui-input-slider
             class='tui-form__multi-field'
@@ -81,6 +112,7 @@
             [max]="10"
             [min]="1"
             [quantum]="1"
+            [class.tui-skeleton]="!!(formLoader$ | async)"
           >
             Количество источников
           </tui-input-slider>
@@ -90,17 +122,20 @@
           <tui-input
             class='tui-form__multi-field'
             formControlName="sourcePlace"
+            [class.tui-skeleton]="!!(formLoader$ | async)"
           >Размещение источника</tui-input>
           <tui-input-number
             class='tui-form__multi-field'
             formControlName="waitTime"
             tuiTextfieldPostfix='мин'
+            [class.tui-skeleton]="!!(formLoader$ | async)"
           >Выдержка</tui-input-number>
         </div>
         
         <tui-input
           class='tui-form__row tui-form__row_half-width'
           formControlName="sourcePlace"
+          [class.tui-skeleton]="!!(formLoader$ | async)"
         >Отвлечения</tui-input>
         
         <div class='tui-form__header'>Внешние условия</div>
@@ -110,11 +145,13 @@
             class='tui-form__multi-field'
             formControlName="temperature"
             tuiTextfieldPostfix='C'
+            [class.tui-skeleton]="!!(formLoader$ | async)"
           >Температура</tui-input-number>
           <tui-input-number
             class='tui-form__multi-field'
             formControlName="humidity"
             tuiTextfieldPostfix='%'
+            [class.tui-skeleton]="!!(formLoader$ | async)"
           >Влажность</tui-input-number>
         </div>
 
@@ -122,6 +159,7 @@
           class='tui-form__row tui-form__row_half-width'
           formControlName="wind"
           tuiTextfieldPostfix='м/c'
+          [class.tui-skeleton]="!!(formLoader$ | async)"
         >Ветер</tui-input>
 
         <div class='tui-form__header'>Выводы и змечания</div>
@@ -129,10 +167,11 @@
         <tui-textarea
           class='tui-form__row'
           formControlName="conclusion"
+          [class.tui-skeleton]="!!(formLoader$ | async)"
         >Введите текст</tui-textarea>
 
         <div class='tui-form__buttons tui-space_bottom-8'>
-          <button class='tui-form__button' tuiButton type='submit' [showLoader]='!!(submitLoader$ | async)'>Сохранить</button>
+          <button class='tui-form__button' tuiButton type='submit' [showLoader]='!!(submitLoader$ | async)'>{{submitText}}</button>
         </div>
       </form>
     </div>

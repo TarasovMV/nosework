@@ -54,6 +54,10 @@ export class AuthPage {
         map(type => (type === AuthPageType.Auth ? 'Войти' : 'Зарегистрироваться')),
     );
 
+    readonly title$ = this.pageType$.pipe(
+        map(type => (type === AuthPageType.Auth ? 'Вход' : 'Регистрация')),
+    );
+
     readonly linkText$ = this.pageType$.pipe(
         map(type =>
             type === AuthPageType.Auth ? 'Зерегистрироваться' : 'Уже есть аккаунт',

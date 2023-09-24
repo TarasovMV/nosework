@@ -1,6 +1,6 @@
 export interface PlanDb {
     id?: number;
-    created_at?: DateString;
+    created_at?: DateTimeString;
     user_id?: UUID;
     title: string;
     image: UUID | null;

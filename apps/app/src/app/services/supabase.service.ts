@@ -9,7 +9,7 @@ import {
 } from '@supabase/supabase-js';
 import {environment} from '../../environments/environment';
 import {from, of, switchMap, tap, throwError} from 'rxjs';
-import {PlanDb} from '../models';
+import {PlanDb, TrainingDb} from '../models';
 
 export interface Profile {
     id?: string;
@@ -39,6 +39,18 @@ export class SupabaseService {
         return from(this.supabase.from('plans').insert(data));
     }
 
+    updatePlan(data: PlanDb) {
+        return from(this.supabase.from('plans').upsert(data));
+    }
+
+    addTraining(data: TrainingDb) {
+        return from(this.supabase.from('trainings').insert(data));
+    }
+
+    updateTraining(data: TrainingDb) {
+        return from(this.supabase.from('trainings').upsert(data));
+    }
+
     getPlanById(id: string) {
         return from(
             this.supabase
@@ -50,10 +62,30 @@ export class SupabaseService {
         );
     }
 
+    getTrainingById(id: string) {
+        return from(
+            this.supabase
+                .from('trainings')
+                .select(`*`)
+                .eq('user_id', this.session?.user.id)
+                .eq('id', id)
+                .single(),
+        );
+    }
+
     getPlans() {
         return from(
             this.supabase
                 .from('plans')
+                .select(`*`)
+                .eq('user_id', this.session?.user.id),
+        );
+    }
+
+    getTrainings() {
+        return from(
+            this.supabase
+                .from('trainings')
                 .select(`*`)
                 .eq('user_id', this.session?.user.id),
         );
@@ -105,6 +137,12 @@ export class SupabaseService {
     uploadPlanImage(filePath: string, file: File) {
         return from(
             this.supabase.storage.from('plan_images').upload('private/' + filePath, file),
+        );
+    }
+
+    deletePlanImage(filePath: string) {
+        return from(
+            this.supabase.storage.from('plan_images').remove(['private/' + filePath]),
         );
     }
 }
